@@ -1,8 +1,14 @@
 <p align="center">
-	<img alt="logo" src="readme/logo-chinese.png" height="150" width="150">
+    <img alt="logo" src="readme/logo-chinese.png" height="150" width="150">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">智碳光伏管理系统</h1>
 <p align="center">基于若依框架前后端分离版本</p>
+
+<p align="center" style="background-color: #fff3cd; padding: 10px; border-radius: 5px;">
+  <strong>🔐 不知道管理员密码？</strong><br/>
+  默认账户: <code>admin</code> / <code>admin123</code><br/>
+  详见 <a href="./管理员登录说明.txt">管理员登录说明.txt</a> 或 <a href="./文档索引.md">文档索引.md</a>
+</p>
 <p align="center">光伏平台后台展示&接口已完全开源，代码完备，功能齐全，运行正常</p>
 <p align="center">数采和数据清洗部分网上开源的库很多，学习者可以参考友商集成</p>
 <p align="center"><span style="color: red;">通过本项目，学习者可以掌握光伏监测管理行业的功能和业务，以及技术架构。</span></p>
@@ -33,9 +39,30 @@
 #####  所以大家如果有更深入的问题，提issue吧。
 ##
 
-## 在线体验
+## 快速开始
 
-- guestUser/guest@123456
+### 管理员登录
+
+系统提供以下默认账户：
+
+**管理员账户（完整权限）:**
+- 用户名: `admin`
+- 密码: `admin123`
+
+**访客账户（只读权限）:**
+- 用户名: `guestUser`
+- 密码: `guest@123456`
+
+> ⚠️ **重要提示**: 首次登录后请立即修改默认密码！
+
+**忘记密码？** 查看以下文档了解如何重置：
+- 📖 [管理员登录说明.txt](./管理员登录说明.txt) - 简明中文说明
+- 📖 [README_LOGIN.md](./README_LOGIN.md) - 详细登录和密码重置指南
+- 📖 [QUICK_START.md](./QUICK_START.md) - 快速启动和部署检查指南
+- 🔧 [reset-admin-password.sh](./reset-admin-password.sh) - 一键密码重置脚本
+- 🗄️ [sql/reset-admin-password.sql](./sql/reset-admin-password.sql) - SQL重置脚本
+
+### 在线体验
 
 演示地址：  
 https://demo-pv.zhitancloud.com/
