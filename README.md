@@ -1,5 +1,5 @@
 <p align="center">
-	<img alt="logo" src="readme/logo-chinese.png" height="150" width="150">
+    <img alt="logo" src="readme/logo-chinese.png" height="150" width="150">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">智碳光伏管理系统</h1>
 <p align="center">基于若依框架前后端分离版本</p>
@@ -106,6 +106,67 @@ https://demo-pv.zhitancloud.com/
 #### 7.2 实时监测
 #### 7.3 智能报警
 
+
+## 后端启动故障排查（CentOS 9）
+
+遇到前端可访问但后端接口无响应时，可以按如下顺序排查：
+
+1. **确认服务进程是否运行**
+   ```bash
+   sudo systemctl status ruoyi.service
+   ```
+   - 如果状态为 `inactive`/`failed`，执行 `sudo systemctl restart ruoyi.service` 并观察输出。
+   - 未配置 systemd 时，可用 `ps -ef | grep ruoyi-admin.jar` 查看 Java 进程是否存在。
+
+2. **查看系统日志**
+   ```bash
+   sudo journalctl -u ruoyi.service -n 200 --no-pager
+   ```
+   - 若使用 `nohup` 启动，请检查启动目录下的 `nohup.out` 或自定义日志文件。
+   - 常见报错包括：数据库/Redis 连接失败、端口占用、配置文件缺失等。
+
+3. **确认端口监听情况**
+   ```bash
+   sudo ss -ltnp | grep 9050
+   ```
+   - 未发现监听说明服务启动失败。
+   - 若端口被占用，可通过 `sudo lsof -i:9050` 定位并释放冲突进程。
+
+4. **验证依赖服务是否正常**
+   - MySQL：`mysql -h 127.0.0.1 -P 3306 -u pv -p`
+   - Redis：`redis-cli -h 127.0.0.1 -p 6379 ping`
+   - InfluxDB（若启用）：`curl http://127.0.0.1:8086/health`
+
+   确保相关服务均已 `systemctl enable --now` 启动，账号密码与 `application-prod.yml` 保持一致。
+
+5. **检查配置文件**
+   - 确认 `application-prod.yml` 中的数据库、Redis、上传目录等信息正确。
+   - `ruoyi.profile` 指向的目录必须存在且具备读写权限：
+     ```bash
+     sudo mkdir -p /data/ruoyi/uploadPath
+     sudo chown deploy:deploy -R /data/ruoyi
+     ```
+
+6. **手动启动以捕获详细日志**
+   ```bash
+   cd /opt/zhitan-pv/ruoyi-admin/target
+   java -jar ruoyi-admin.jar --spring.profiles.active=prod
+   ```
+   - 观察控制台输出（尤其是异常堆栈）快速定位问题。
+   - 确认无误后再恢复 systemd/pm2 等后台运行方式。
+
+7. **重新构建与部署**
+   - 当发现 jar 文件缺失或版本过旧时，重新打包：
+     ```bash
+     mvn -pl ruoyi-admin -am clean package -DskipTests
+     ```
+   - 更新后执行 `sudo systemctl restart ruoyi.service`。
+
+8. **网络与防火墙检查**
+   - 本机验证接口：`curl http://127.0.0.1:9050/prod-api/actuator/health`
+   - 若本机正常但外网访问失败，检查 `firewalld`/安全组端口是否放行。
+
+完成上述检查后，一般即可定位并恢复后端服务，随后刷新前端页面即可恢复接口调用。
 
 ## 沟通交流。
 

@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# Maven build output
+**/target/
+
+# Frontend dependencies
+ruoyi-vue/node_modules/
+
 # Log file
 *.log
 
